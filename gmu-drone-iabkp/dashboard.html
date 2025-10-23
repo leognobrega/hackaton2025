@@ -1,0 +1,265 @@
+
+<!doctype html>
+<html lang="pt-br" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCI | Painel Operacional</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    #map { height: calc(100vh - 170px); }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg border-bottom bg-body-tertiary sticky-top">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <img src="assets/img/brasaof.png" height="48" class="me-2 brand-img" alt="Brasão de Indaiatuba GMU">
+        <span>GCI | PAINEL DE CONTROLE</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active" href="#"></a></li>
+        </ul>
+        <div class="d-flex align-items-center gap-3">
+          <span id="userBadge" class="badge text-bg-primary"></span>
+          <a href="index.html" class="btn btn-outline-danger btn-sm"><i class="bi bi-box-arrow-right"></i></a>
+        </div>
+      </div>
+
+  </nav>
+
+  <div class="container-fluid py-3">
+    <div class="row g-3">
+      <div class="col-12 col-xl-9">
+        <!-- KPIs -->
+        <div class="row g-3 mb-1">
+          <div class="col-6 col-lg-3">
+            <div class="card kpi">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="text-secondary small">Público estimado</div>
+                    <div class="h4 m-0" id="kpiPublico">—</div>
+                  </div>
+                  <i class="bi bi-people display-6 text-secondary"></i>
+                </div>
+              </div>
+                </div>
+              </div>
+          <div class="col-6 col-lg-3">
+            <div class="card kpi">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="text-secondary small">Ocorrências ativas</div>
+                    <div class="h4 m-0" id="kpiOcorrencias">—</div>
+                  </div>
+                  <i class="bi bi-exclamation-triangle display-6 text-warning"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="card kpi">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="text-secondary small">Risco atual</div>
+                    <div class="h4 m-0" id="kpiRisco">—</div>
+                  </div>
+                  <i class="bi bi-activity display-6 text-danger"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="card kpi">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="text-secondary small">Unidades em campo</div>
+                    <div class="h4 m-0" id="kpiUnidades">—</div>
+                  </div>
+                  <i class="bi bi-truck-front display-6 text-info"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAPA -->
+        <div class="card">
+          <div class="card-header d-flex flex-wrap gap-2 align-items-center">
+            <span class="fw-semibold">Mapa Operacional</span>
+            <div class="ms-auto d-flex gap-2">
+              <button class="btn btn-sm btn-outline-primary" id="btnRecalcular"><i class="bi bi-arrow-repeat me-1"></i>Recalcular calor</button>
+              <button class="btn btn-sm btn-outline-success" id="btnDespachar"><i class="bi bi-send-check me-1"></i>Despachar unidade mais próxima</button>
+              <button class="btn btn-sm btn-outline-secondary" id="btnCentralizar"><i class="bi bi-crosshair me-1"></i>Centralizar</button>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div id="map"></div>
+          </div>
+        </div>
+        <!-- Analytics container -->
+        <div class="container mt-3">
+          <div class="card">
+            <div class="card-header">Análises de Eventos</div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-12 col-lg-6">
+                  <div class="card h-100">
+                    <div class="card-header">Ocorrências por tipo</div>
+                    <div class="card-body"><canvas id="chartTipos"></canvas></div>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                  <div class="card h-100">
+                    <div class="card-header">Curva de público — últimas 3h</div>
+                    <div class="card-body"><canvas id="chartPublico"></canvas></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Ocorrências Abertas -->
+        <div class="container mt-3">
+          <div class="card">
+            <div class="card-header">Ocorrências Abertas</div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-12 col-lg-6">
+                  <div class="card h-100">
+                    <div class="card-header">Criticidade</div>
+                    <div class="card-body"><canvas id="chartCriticidade"></canvas></div>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                  <div class="card h-100">
+                    <div class="card-header">Ordem de abertura (mais recente no topo)</div>
+                    <div class="card-body">
+                        <div id="openOccList" class="list-group list-group-flush"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-xl-3">
+        <div class="card mb-3">
+          <div class="card-header"><i class="bi bi-funnel me-2"></i>Filtros</div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label">Evento</label>
+              <select id="selEvento" class="form-select">
+                <option value="parque">Parque Ecológio</option>
+                <option value="concha">Concha Acústica</option>
+                <option value="feira">Feira Popular - Centro</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Tipos de ocorrência</label>
+              <select id="selOcorrencia" class="form-select" multiple>
+                <option>Furto</option>
+                <option>Briga</option>
+                <option>Desordem</option>
+                <option>Emergência médica</option>
+                <option>Trânsito</option>
+              </select>
+              <div class="form-text">Use Ctrl/Cmd para múltiplas.</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Equipes</label>
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="fTrânsito" checked> <label class="form-check-label" for="fTrânsito">Trânsito</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="fROMU" checked> <label class="form-check-label" for="fROMU">ROMU</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="fTático" checked> <label class="form-check-label" for="fTático">Apoio Tático</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="fK9" checked> <label class="form-check-label" for="fK9">K9</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="fDrone" checked> <label class="form-check-label" for="fDrone">Drones</label></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Camadas</label>
+              <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="layerHeat" checked> <label class="form-check-label" for="layerHeat">Mapa de calor</label></div>
+              <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="layerCameras" checked> <label class="form-check-label" for="layerCameras">Câmeras</label></div>
+              <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="layerBarreiras" checked> <label class="form-check-label" for="layerBarreiras">Barreiras</label></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header d-flex align-items-center justify-content-between">
+            <span><i class="bi bi-broadcast-pin me-2"></i>Comunicações</span>
+            <button class="btn btn-sm btn-outline-secondary" id="btnExportarLog"><i class="bi bi-download"></i></button>
+          </div>
+          <div class="card-body">
+            <div id="log" class="log"></div>
+            <div class="row g-2 mt-2">
+              <div class="col-6">
+                <select id="selDestino" class="form-select form-select-sm">
+                  <option value="GM">GM (Guarda Municipal)</option>
+                  <option value="Bombeiros">Bombeiros</option>
+                  <option value="SAMU">SAMU</option>
+                  <option value="DEMUTRAN">DEMUTRAN</option>
+                  <option value="Ambiental">Ambiental</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <input id="msg" class="form-control form-control-sm" placeholder="Mensagem de broadcast...">
+              </div>
+              <div class="col-12 d-flex justify-content-end">
+                <button class="btn btn-sm btn-primary" id="enviar"><i class="bi bi-send"></i> Enviar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendar -->
+        <div class="card">
+          <div class="card-header">
+            <div class="d-flex align-items-center justify-content-between">
+              <div><i class="bi bi-calendar3 me-2"></i>Calendário</div>
+              <div>
+                <button class="btn btn-sm btn-primary me-2" id="btnCriarEvento"><i class="bi bi-plus-circle me-1"></i>Criar Evento</button>
+                <button class="btn btn-sm btn-outline-secondary" id="mini-cal-prev"><i class="bi bi-chevron-left"></i></button>
+                <span id="mini-cal-label" class="mx-2">outubro de 2025</span>
+                <button class="btn btn-sm btn-outline-secondary" id="mini-cal-next"><i class="bi bi-chevron-right"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- Calendar grid -->
+            <div id="miniCalendarGrid" class="calendar-grid mb-3"></div>
+            <!-- Selected day events -->
+            <div class="mt-3">
+              <h6 class="text-muted mb-2">Eventos do dia</h6>
+              <div id="miniCalendarEvents" class="small">
+                Selecione um dia para ver os eventos.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="assets/js/mock-data.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

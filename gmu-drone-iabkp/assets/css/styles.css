@@ -1,0 +1,146 @@
+
+:root{
+	/* Indaiatuba primary blue from flag and supporting colors */
+	--brand: #0066b3; /* deep flag blue */
+	--brand-light: #e9f4ff;
+	--bg: #ffffff;
+	--panel: #f6fbff;
+	--muted: #6b7a8a;
+}
+body{ background: var(--bg); color:#0b2540; }
+.navbar{ backdrop-filter: blur(6px); background: linear-gradient(90deg, var(--brand) 0%, var(--brand) 100%); }
+.navbar .navbar-brand, .navbar .nav-link, .navbar .btn{ color: #fff; }
+.kpi .card-body{ min-height:84px; }
+#map{ border-radius: .5rem; }
+.log{ height: 180px; overflow:auto; background: rgba(0,102,179,0.05); border-radius:.5rem; padding:.5rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:.9rem; color:#04223a }
+.list-group-item small{ opacity:.85; }
+.badge-role{ background: var(--brand); color:#fff }
+.leaflet-container a{ color: var(--brand); }
+.card{ background-color: var(--panel); border: 6px solid rgba(11,37,64,0.06); }
+.card-header{ background-color: var(--brand); color: #fff; border-bottom: none; font: 300; }
+.form-control, .form-select{ background-color:#fff; color:#0b2540; border-color:rgba(11,37,64,0.08); }
+
+/* Filter card styles */
+.card .card-header + .card-body { color: #000; }
+.card .form-label { color: #000 !important; }
+.card .form-check-label { color: #000 !important; }
+.card .form-text { color: #000 !important; opacity: 0.8; }
+
+/* Banner com as faixas da bandeira: azul - branco - azul */
+.flag-banner{ height: 48px; display:block; }
+.flag-banner .flag-stripe{ height: 16px; }
+.flag-banner .flag-stripe.blue{ background: var(--brand); }
+.flag-banner .flag-stripe.white{ background: #ffffff; }
+
+/* Small tweaks for contrast */
+.kpi .card-body .text-secondary{ color: var(--muted) !important; }
+.display-6{ opacity: .9 }
+
+/* Compact occurrences panel (floating on top of map) */
+.oc-panel{
+	position: fixed;
+	right: 18px;
+	top: 110px;
+	width: 260px;
+	background: rgba(255,255,255,0.98);
+	border-radius: .5rem;
+	overflow: hidden;
+	z-index: 1500;
+	box-shadow: 0 6px 18px rgba(11,37,64,0.08);
+	color: var(--brand);
+}
+.oc-panel .oc-header{ background: var(--brand); color: #fff }
+.oc-list{ max-height: 240px; overflow:auto; }
+.oc-item{ padding: .45rem .5rem; border-radius: .375rem; cursor: pointer; }
+.oc-item + .oc-item{ margin-top: .35rem }
+.oc-item:hover{ background: rgba(0,102,179,0.06); }
+
+@media (max-width: 768px){
+	.oc-panel{ right: 10px; top: 90px; width: 200px; }
+}
+
+/* Calendar styles */
+.calendar-grid{ display:grid; grid-template-columns: repeat(7, 1fr); gap:6px; }
+.calendar-cell{ border:1px solid rgba(11,37,64,0.06); border-radius:.375rem; padding:.5rem; min-height:80px; background:#fff }
+.calendar-cell .date-num{ font-weight:600; color:var(--brand); }
+.calendar-cell .events-count{ font-size:.8rem; color:#666; }
+.calendar-today{ box-shadow: 0 0 0 3px rgba(0,102,179,0.06) inset; }
+.calendar-day-event{ padding:.35rem .4rem; border-radius:.25rem; background: rgba(0,102,179,0.06); margin-top:.25rem; cursor:pointer }
+
+/* Unit icons (map) */
+.unit-icon{ display:flex; align-items:center; justify-content:center; }
+.unit-icon.vehicle div, .unit-icon.agent div, .unit-icon.k9 div, .unit-icon.drone div{ filter: drop-shadow(0 1px 1px rgba(0,0,0,0.25)); }
+.unit-icon .emoji{ font-size: 26px; line-height:1; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.35)); transform: translateY(0); transition: transform .18s ease, filter .18s ease; }
+.unit-icon.vehicle .emoji{ font-size: 34px; }
+.unit-icon.agent .emoji{ font-size: 30px; }
+.unit-icon.k9 .emoji{ font-size: 28px; }
+.unit-icon.drone .emoji{ font-size: 30px; }
+.unit-icon .emoji:hover{ transform: scale(1.12) translateY(-2px); }
+
+/* Pulse animation for emojis */
+.unit-icon.pulse .emoji{ animation: emoji-pulse 1.8s infinite; }
+@keyframes emoji-pulse{ 0%{ transform: scale(1) translateY(0); filter: drop-shadow(0 6px 12px rgba(0,0,0,0.35)); } 50%{ transform: scale(1.08) translateY(-3px); filter: drop-shadow(0 10px 18px rgba(0,0,0,0.45)); } 100%{ transform: scale(1) translateY(0); } }
+.leaflet-container .leaflet-interactive{ cursor: pointer }
+
+/* Brand image styling */
+.brand-img {
+    height: 48px;
+    width: auto;
+}
+
+/* Responsive logo sizing in navbar */
+@media (max-width: 576px){
+	.navbar-brand img{ height: 32px !important }
+	.navbar-brand small{ display:none }
+}
+
+/* SVG unit icons inside divIcon */
+.unit-icon svg{ display:block; pointer-events:none }
+.leaflet-marker-icon.unit-icon{ background: transparent; border: none }
+.leaflet-marker-icon.unit-icon:hover{ transform: scale(1.06); }
+
+/* Emphasis for police vehicles */
+.unit-icon.vehicle{ transform-origin: center; }
+.unit-icon.vehicle svg{ filter: drop-shadow(0 4px 10px rgba(0,0,0,0.35)); }
+.unit-icon.vehicle:hover{ transform: scale(1.12); z-index: 6000 }
+.unit-icon.vehicle.pulse svg{ animation: vehicle-pulse 2s infinite; }
+
+/* Floating create-event panel and similar overlays */
+.floating-panel{ position: fixed; right: 18px; bottom: 90px; width: 340px; background: #fff; border-radius: .5rem; z-index: 1600; box-shadow: 0 10px 30px rgba(11,37,64,0.12); display: none; }
+.floating-panel .panel-body{ padding: .9rem; }
+.floating-panel .panel-header{ padding:.6rem .9rem; border-bottom:1px solid rgba(11,37,64,0.06); display:flex; align-items:center; justify-content:space-between }
+.floating-panel .small-note{ font-size:.85rem; color:#666 }
+
+/* Calendar tweaks */
+.calendar-cell{ 
+    padding: .35rem;
+    background: #fff;
+    min-height: 48px;
+    font-size: .8rem;
+    border: 1px solid rgba(0,0,0,.08);
+}
+.calendar-today{ 
+    box-shadow: 0 0 0 3px rgba(0,102,179,0.08) inset;
+    background: var(--brand-light);
+}
+.calendar-grid { 
+    gap: 3px;
+}
+#mini-cal-label {
+    font-size: .95rem;
+    font-weight: 500;
+}
+#miniCalendarEvents {
+    max-height: 180px;
+    overflow-y: auto;
+    padding-right: .5rem;
+}
+.calendar-day-event {
+    font-size: .8rem;
+    padding: .25rem .35rem;
+}
+
+/* Map size adjustments */
+#map { height: calc(100vh - 180px) !important; }
+
+@keyframes vehicle-pulse{ 0%{ transform: translateY(0) } 50%{ transform: translateY(-2px) } 100%{ transform: translateY(0) } }
